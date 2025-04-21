@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-ingress
+  namespace: microservices
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: a4160953f6cbe4d2eb7d31ae6bf113cd-1978323292.eu-north-1.elb.amazonaws.com  # Use the LoadBalancer DNS from AWS
+    http:
+      paths:
+      - path: /frontend
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+      - path: /todos
+        pathType: Prefix
+        backend:
+          service:
+            name: todos-api
+            port:
+              number: 8082
+      - path: /users
+        pathType: Prefix
+        backend:
+          service:
+            name: users-api
+            port:
+              number: 8083
