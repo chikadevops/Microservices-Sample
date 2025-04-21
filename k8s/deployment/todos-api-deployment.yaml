@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todos-api
+  namespace: microservices
+  labels:
+    app: todos-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todos-api
+  template:
+    metadata:
+      labels:
+        app: todos-api
+    spec:
+      containers:
+        - name: todos-api
+          image: tejirih/todos-image:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: TODO_API_PORT
+              value: "8082"
+            - name: JWT_SECRET
+              value: "secret123"
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_CHANNEL
+              value: "log_channel"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todos-api
+spec:
+  selector:
+    app: todos-api
+  ports:
+    - port: 8082
+      targetPort: 8082
