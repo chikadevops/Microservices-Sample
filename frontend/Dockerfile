@@ -1,39 +1,39 @@
-# Use Node 14 as base image for building
-FROM node:14 AS build-stage
+# Build Stage
+FROM node:14 AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package.json and package-lock.json (if exists)
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Copy source code
+# Copy rest of the application code
 COPY . .
 
-# Build the application for production
+# Build the Vue app for production
 RUN npm run build
 
-# Use a lightweight web server (nginx) for serving the built app
+# Production Stage
 FROM nginx:alpine AS production-stage
 
-# Set environment variables for backend addresses
-# These can be overridden at runtime using Docker/Kubernetes env vars
-ENV PORT=80 \
-    AUTH_API_ADDRESS=http://localhost:3001 \
-    TODOS_API_ADDRESS=http://localhost:3002
-
-# Copy built files from previous stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# Copy built assets from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Add custom nginx config to serve the app
-COPY nginx.conf /etc/nginx/conf.d
+# Copy a default nginx configuration 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose the port
-EXPOSE ${PORT}
+# Set environment variables (optional placeholders)
+#ENV AUTH_API_ADDRESS=http://auth-api:8081
+#ENV TODOS_API_ADDRESS=http://todos-api:8082
 
-# Start nginx
+# Expose port (typically 80 for nginx)
+EXPOSE 80
+
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

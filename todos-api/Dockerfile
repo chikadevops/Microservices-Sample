@@ -1,27 +1,20 @@
-# Use Node.js 8 base image
+# Use official Node.js image as base image (version 8 as mentioned)
 FROM node:8
 
-# Set working directory inside container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json if available
+# Copy package.json and package-lock.json (if they exist)
 COPY package*.json ./
 
-# Install dependencies
+# Install Node.js dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the rest of the application code to the container
 COPY . .
 
-# Expose the port (optional, for documentation)
+# Expose the port that the service will listen on (sams TODO_API_PORT)
 EXPOSE 8082
 
-# Set environment variables with defaults (optional)
-ENV TODO_API_PORT=8082 \
-    JWT_SECRET=changeme \
-    REDIS_HOST=localhost \
-    REDIS_PORT=6379 \
-    REDIS_CHANNEL=todos-channel
-
-# Run the app
+# Command to run the Node.js application (use npm start)
 CMD ["npm", "start"]
