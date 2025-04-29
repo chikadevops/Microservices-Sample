@@ -1,66 +1,72 @@
 version: '3.8'
 
 services:
-  redis:
-    image: redis:7-alpine
-    container_name: redis
-    ports:
-      - "6379:6379"
-
-  users-api:
-    image: tejirih/user-images:latest
-    container_name: users-api
-    environment:
-      - JWT_SECRET=secret123
-      - SERVER_PORT=8083
-    ports:
-      - "8083:8083"
-
-  auth-api:
-    image: tejirih/auth-image:latest
-    container_name: auth-api
-    environment:
-      - AUTH_API_PORT=8081
-      - USERS_API_ADDRESS=http://users-api:8083
-      - JWT_SECRET=secret123
-    ports:
-      - "8081:8081"
-    depends_on:
-      - users-api
-
-  todos-api:
-    image: tejirih/todos-image:latest
-    container_name: todos-api
-    environment:
-      - TODO_API_PORT=8082
-      - JWT_SECRET=secret123
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_CHANNEL=log_channel
-    ports:
-      - "8082:8082"
-    depends_on:
-      - redis
-
-  log-message-processor:
-    image: tejirih/log-image:latest
-    container_name: log-processor
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_CHANNEL=log_channel
-    depends_on:
-      - redis
-
+  # Frontend (Vue.js) Application
   frontend:
-    image: tejirih/frontend:latest
+    image: frontend:latest
     container_name: frontend
     environment:
       - PORT=8080
       - AUTH_API_ADDRESS=http://auth-api:8081
       - TODOS_API_ADDRESS=http://todos-api:8082
     ports:
-      - "8088:80"
+      - "8080:80" # Expose frontend on port 8080 and map it to port 80 in the container
     depends_on:
       - auth-api
       - todos-api
+
+  # Auth API (Go)
+  auth-api:
+    image: auth-api:latest
+    container_name: auth-api
+    environment:
+      - JWT_SECRET=secret123
+      - AUTH_PORT=8081
+      - USERS_API_ADDRESS=http://users-api:8083
+    ports:
+      - "8081:8081" # Expose Auth API on port 8081
+    depends_on:
+      - users-api
+
+  # TODOs API (Node.js)
+  todos-api:
+    image: todos-api:latest
+    container_name: todos-api
+    ports:
+      - "8082:8082" # Expose TODOs API on port 8082
+    environment:
+      - TODO_API_PORT=8082
+      - JWT_SECRET=secret123
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_CHANNEL=log_channel
+    depends_on:
+      - redis
+
+  # Users API (Spring Boot)
+  users-api:
+    image: users-api:latest
+    container_name: users-api
+    environment:
+      - PORT=8083
+      - JWT_SECRET=secret123
+    ports:
+      - "8083:8083" # Expose Users API on port 8083
+
+  # Log Message Processor (Python)
+  log-message-processor:
+    image: log-message-processor:latest
+    container_name: log-message-processor
+    environment:
+      - REDIS_HOST=redis # Connect to Redis
+      - REDIS_PORT=6379
+      - REDIS_CHANNEL=log_channel # Listen to log_channel
+    depends_on:
+      - redis
+
+  # Redis (Message Broker)
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379" # Expose Redis on port 6379
