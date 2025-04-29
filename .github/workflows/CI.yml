@@ -17,16 +17,16 @@ jobs:
 
             - name: Build Docker Images
               run: |
-                docker build -t auth-api ./auth-api
-                docker build -t todos-api ./todos-api
-                docker build -t users-api ./users-api
-                docker build -t log-message-processor ./log-message-processor
-                docker build -t frontend ./frontend
+                docker build -t chikadev/auth-api ./auth-api
+                docker build -t chikadev/todos-api ./todos-api
+                docker build -t chikadev/users-api ./users-api
+                docker build -t chikadev/log-message-processor ./log-message-processor
+                docker build -t chikadev/frontend ./frontend
 
             - name: Push Docker Images
               run: |
-                docker push auth-api
-                docker push todos-api
-                docker push users-api
-                docker push log-message-processor
-                docker push frontend
+                docker push chikadev/auth-api
+                docker push chikadev/todos-api
+                docker push chikadev/users-api
+                docker push chikadev/log-message-processor
+                docker push chikadev/frontend
