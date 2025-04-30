@@ -36,7 +36,7 @@ jobs:
                 echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
                 
                 # Download docker-compose.yml from GitHub
-                curl -O https://raw.githubusercontent.com/chikadevops/Microservices_Sample/main/docker-compose.yml
+                curl -O https://github.com/chikadevops/Microservices-Sample/blob/main/docker-compose.yml
 
                 # Pull the latest Docker images
                 docker pull chikadev/auth-api:latest
