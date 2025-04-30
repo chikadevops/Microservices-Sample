@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Frontend (Vue.js) Application
   frontend:
-    image: frontend:latest
+    image: chikadev/frontend:latest
     container_name: frontend
     environment:
       - PORT=8080
@@ -17,7 +17,7 @@ services:
 
   # Auth API (Go)
   auth-api:
-    image: auth-api:latest
+    image: chikadev/auth-api:latest
     container_name: auth-api
     environment:
       - JWT_SECRET=secret123
@@ -30,7 +30,7 @@ services:
 
   # TODOs API (Node.js)
   todos-api:
-    image: todos-api:latest
+    image: chikadev/todos-api:latest
     container_name: todos-api
     ports:
       - "8082:8082" # Expose TODOs API on port 8082
@@ -45,7 +45,7 @@ services:
 
   # Users API (Spring Boot)
   users-api:
-    image: users-api:latest
+    image: chikadev/users-api:latest
     container_name: users-api
     environment:
       - PORT=8083
@@ -55,7 +55,7 @@ services:
 
   # Log Message Processor (Python)
   log-message-processor:
-    image: log-message-processor:latest
+    image: chikadev/log-message-processor:latest
     container_name: log-message-processor
     environment:
       - REDIS_HOST=redis # Connect to Redis
