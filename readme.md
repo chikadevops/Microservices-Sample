@@ -101,4 +101,4 @@ jobs:
 
 It is worthy of note that I implemented caching to optimize build times, secured all sensitive data in our GitHub secret. And configured  my workflows to deploy updates authomatically.
 
-# Thanks
+#Thanks
